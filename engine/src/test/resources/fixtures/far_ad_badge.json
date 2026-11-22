@@ -1,0 +1,39 @@
+{
+  "className": "android.widget.FrameLayout",
+  "children": [
+    {
+      "className": "android.view.ViewGroup",
+      "children": [
+        {
+          "className": "android.view.ViewGroup",
+          "children": [
+            {
+              "viewId": "com.google.android.youtube:id/time_bar_current_time",
+              "className": "android.widget.TextView",
+              "text": "1:02"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "className": "android.view.ViewGroup",
+      "children": [
+        {
+          "className": "android.view.ViewGroup",
+          "children": [
+            {
+              "className": "android.view.ViewGroup",
+              "children": [
+                {
+                  "className": "android.widget.TextView",
+                  "text": "Ad"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

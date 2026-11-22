@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ad Skip</string>
+    <string name="accessibility_service_description">Shows a banner while a video ad is on screen in YouTube or Prime Video, and presses Skip when that button is clickable. It watches only those apps. It does not use the network.</string>
+</resources>

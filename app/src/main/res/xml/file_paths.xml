@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <files-path
+        name="config"
+        path="." />
+    <files-path
+        name="dumps"
+        path="debug/" />
+    <external-files-path
+        name="external_dumps"
+        path="debug/" />
+</paths>

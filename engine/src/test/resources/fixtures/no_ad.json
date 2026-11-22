@@ -1,0 +1,27 @@
+{
+  "className": "android.widget.FrameLayout",
+  "children": [
+    {
+      "viewId": "com.google.android.youtube:id/title",
+      "className": "android.widget.TextView",
+      "text": "How to make a shelf"
+    },
+    {
+      "className": "android.widget.ImageButton",
+      "contentDescription": "Pause",
+      "clickable": true
+    },
+    {
+      "className": "android.widget.Button",
+      "text": "Skip intro",
+      "contentDescription": "Skip intro",
+      "clickable": true,
+      "bounds": { "left": 40, "top": 400, "right": 280, "bottom": 480 }
+    },
+    {
+      "viewId": "com.google.android.youtube:id/time_bar_current_time",
+      "className": "android.widget.TextView",
+      "text": "12:04"
+    }
+  ]
+}

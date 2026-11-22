@@ -1,0 +1,20 @@
+{
+  "className": "android.widget.FrameLayout",
+  "children": [
+    {
+      "viewId": "com.google.android.youtube:id/ad_progress_text",
+      "className": "android.widget.TextView",
+      "text": "Ad 1 of 2"
+    },
+    {
+      "viewId": "com.google.android.youtube:id/skip_ad_button",
+      "className": "android.widget.Button",
+      "text": "Skip ad",
+      "contentDescription": "Skip ad",
+      "clickable": true,
+      "enabled": true,
+      "visible": true,
+      "bounds": { "left": 800, "top": 1500, "right": 1040, "bottom": 1600 }
+    }
+  ]
+}

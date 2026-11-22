@@ -1,0 +1,20 @@
+{
+  "className": "android.widget.FrameLayout",
+  "children": [
+    {
+      "className": "android.widget.LinearLayout",
+      "children": [
+        { "className": "android.widget.TextView", "text": "Ad" },
+        { "className": "android.widget.TextView", "text": "0:05" }
+      ]
+    },
+    {
+      "className": "android.widget.Button",
+      "text": "Skip",
+      "contentDescription": "Skip",
+      "clickable": true,
+      "enabled": true,
+      "bounds": { "left": 860, "top": 1700, "right": 1040, "bottom": 1800 }
+    }
+  ]
+}

@@ -1,0 +1,231 @@
+{
+  "version": 1,
+  "notes": "Match rules for video ads. strength weak (exact Ad, Sponsored, or Advertisement) counts only when a short mm:ss countdown sits next to that badge. Skip, Skip ad, and Skip ads do not match Skip intro. View ids are matched by the resource entry name, so skip_ad_button matches com.google.android.youtube:id/skip_ad_button.",
+  "debounceMs": 1200,
+  "clearMisses": 3,
+  "hideTimeoutMs": 800,
+  "apps": [
+    {
+      "packageName": "com.google.android.youtube",
+      "label": "YouTube",
+      "adSignals": [
+        {
+          "source": "viewId",
+          "match": "suffix",
+          "values": ["ad_progress_text", "ad_countdown", "ad_badge", "ad_badge_icon", "ad_overlay", "ad_timer"],
+          "strength": "strong"
+        },
+        {
+          "source": "text",
+          "match": "regex",
+          "values": [
+            "^Ad\\s*[·•|:\\-]\\s*\\d{1,2}:\\d{2}(?:\\s*[·•|:\\-]?\\s*Ad\\s+\\d+\\s+of\\s+\\d+)?\\s*$",
+            "^Ad\\s+\\d+\\s+of\\s+\\d+(?:\\s*[·•|:\\-]\\s*\\d{1,2}:\\d{2})?\\s*$",
+            "^Video will play after(?: the)? ad\\b.*$",
+            "^Your video will play after\\b.*$",
+            "^Ad will end\\b.*$"
+          ],
+          "strength": "strong"
+        },
+        {
+          "source": "contentDescription",
+          "match": "regex",
+          "values": [
+            "^Ad\\s*[·•|:\\-]\\s*\\d{1,2}:\\d{2}.*$",
+            "^Ad\\s+\\d+\\s+of\\s+\\d+.*$"
+          ],
+          "strength": "strong"
+        },
+        {
+          "source": "text",
+          "match": "equals",
+          "values": ["Ad", "Sponsored", "Advertisement"],
+          "strength": "weak"
+        },
+        {
+          "source": "contentDescription",
+          "match": "equals",
+          "values": ["Ad", "Sponsored", "Advertisement"],
+          "strength": "weak"
+        }
+      ],
+      "skipSignals": [
+        {
+          "source": "viewId",
+          "match": "suffix",
+          "values": ["skip_ad_button", "skip_ads_button", "skip_button"],
+          "strength": "strong"
+        },
+        {
+          "source": "text",
+          "match": "regex",
+          "values": ["^Skip(?:\\s+ads?)?\\s*[>›»]?$"],
+          "strength": "strong"
+        },
+        {
+          "source": "contentDescription",
+          "match": "regex",
+          "values": ["^Skip(?:\\s+ads?)?(?:\\s+button)?\\s*[>›»]?$"],
+          "strength": "strong"
+        }
+      ],
+      "skipNotReady": ["^Skip(?:\\s+ads?)?\\s+in\\b", "^\\d+$", "^\\d+\\s*s$"],
+      "countdownViewIds": ["ad_progress_text", "ad_countdown", "ad_timer"],
+      "countdownPatterns": [
+        "Ad\\s*[·•|:\\-]\\s*(\\d{1,2}):(\\d{2})",
+        "Ad\\s+(\\d{1,2}):(\\d{2})",
+        "Skip(?:\\s+ads?)?\\s+in\\s+(\\d+)"
+      ],
+      "standaloneCountdown": "^(\\d{1,2}):(\\d{2})$",
+      "ignoreStandaloneViewIdParts": ["time_bar", "duration", "seekbar", "seek_bar", "player_time", "current_time", "watch_time"]
+    },
+    {
+      "packageName": "com.amazon.avod.thirdpartyclient",
+      "label": "Prime Video",
+      "adSignals": [
+        {
+          "source": "viewId",
+          "match": "suffix",
+          "values": ["ad_progress_text", "ad_countdown", "ad_badge", "ad_badge_icon", "ad_overlay", "ad_timer", "AdsCountdown"],
+          "strength": "strong"
+        },
+        {
+          "source": "text",
+          "match": "regex",
+          "values": [
+            "^Ad\\s*[·•|:\\-]\\s*\\d{1,2}:\\d{2}(?:\\s*[·•|:\\-]?\\s*Ad\\s+\\d+\\s+of\\s+\\d+)?\\s*$",
+            "^Ad\\s+\\d+\\s+of\\s+\\d+(?:\\s*[·•|:\\-]\\s*\\d{1,2}:\\d{2})?\\s*$",
+            "^Video will play after(?: the)? ad\\b.*$",
+            "^Your video will play after\\b.*$",
+            "^Ad will end\\b.*$"
+          ],
+          "strength": "strong"
+        },
+        {
+          "source": "contentDescription",
+          "match": "regex",
+          "values": [
+            "^Ad\\s*[·•|:\\-]\\s*\\d{1,2}:\\d{2}.*$",
+            "^Ad\\s+\\d+\\s+of\\s+\\d+.*$"
+          ],
+          "strength": "strong"
+        },
+        {
+          "source": "text",
+          "match": "equals",
+          "values": ["Ad", "Sponsored", "Advertisement"],
+          "strength": "weak"
+        },
+        {
+          "source": "contentDescription",
+          "match": "equals",
+          "values": ["Ad", "Sponsored", "Advertisement"],
+          "strength": "weak"
+        }
+      ],
+      "skipSignals": [
+        {
+          "source": "viewId",
+          "match": "suffix",
+          "values": ["skip_ad_button", "skip_ads_button", "skip_button"],
+          "strength": "strong"
+        },
+        {
+          "source": "text",
+          "match": "regex",
+          "values": ["^Skip(?:\\s+ads?)?\\s*[>›»]?$"],
+          "strength": "strong"
+        },
+        {
+          "source": "contentDescription",
+          "match": "regex",
+          "values": ["^Skip(?:\\s+ads?)?(?:\\s+button)?\\s*[>›»]?$"],
+          "strength": "strong"
+        }
+      ],
+      "skipNotReady": ["^Skip(?:\\s+ads?)?\\s+in\\b", "^\\d+$", "^\\d+\\s*s$"],
+      "countdownViewIds": ["ad_progress_text", "ad_countdown", "ad_timer", "AdsCountdown"],
+      "countdownPatterns": [
+        "Ad\\s*[·•|:\\-]\\s*(\\d{1,2}):(\\d{2})",
+        "Ad\\s+(\\d{1,2}):(\\d{2})",
+        "Skip(?:\\s+ads?)?\\s+in\\s+(\\d+)"
+      ],
+      "standaloneCountdown": "^(\\d{1,2}):(\\d{2})$",
+      "ignoreStandaloneViewIdParts": ["time_bar", "duration", "seekbar", "seek_bar", "player_time", "current_time", "watch_time"]
+    },
+    {
+      "packageName": "com.amazon.amazonvideo.livingroom",
+      "label": "Prime Video (living room)",
+      "adSignals": [
+        {
+          "source": "viewId",
+          "match": "suffix",
+          "values": ["ad_progress_text", "ad_countdown", "ad_badge", "ad_badge_icon", "ad_overlay", "ad_timer", "AdsCountdown"],
+          "strength": "strong"
+        },
+        {
+          "source": "text",
+          "match": "regex",
+          "values": [
+            "^Ad\\s*[·•|:\\-]\\s*\\d{1,2}:\\d{2}(?:\\s*[·•|:\\-]?\\s*Ad\\s+\\d+\\s+of\\s+\\d+)?\\s*$",
+            "^Ad\\s+\\d+\\s+of\\s+\\d+(?:\\s*[·•|:\\-]\\s*\\d{1,2}:\\d{2})?\\s*$",
+            "^Video will play after(?: the)? ad\\b.*$",
+            "^Your video will play after\\b.*$",
+            "^Ad will end\\b.*$"
+          ],
+          "strength": "strong"
+        },
+        {
+          "source": "contentDescription",
+          "match": "regex",
+          "values": [
+            "^Ad\\s*[·•|:\\-]\\s*\\d{1,2}:\\d{2}.*$",
+            "^Ad\\s+\\d+\\s+of\\s+\\d+.*$"
+          ],
+          "strength": "strong"
+        },
+        {
+          "source": "text",
+          "match": "equals",
+          "values": ["Ad", "Sponsored", "Advertisement"],
+          "strength": "weak"
+        },
+        {
+          "source": "contentDescription",
+          "match": "equals",
+          "values": ["Ad", "Sponsored", "Advertisement"],
+          "strength": "weak"
+        }
+      ],
+      "skipSignals": [
+        {
+          "source": "viewId",
+          "match": "suffix",
+          "values": ["skip_ad_button", "skip_ads_button", "skip_button"],
+          "strength": "strong"
+        },
+        {
+          "source": "text",
+          "match": "regex",
+          "values": ["^Skip(?:\\s+ads?)?\\s*[>›»]?$"],
+          "strength": "strong"
+        },
+        {
+          "source": "contentDescription",
+          "match": "regex",
+          "values": ["^Skip(?:\\s+ads?)?(?:\\s+button)?\\s*[>›»]?$"],
+          "strength": "strong"
+        }
+      ],
+      "skipNotReady": ["^Skip(?:\\s+ads?)?\\s+in\\b", "^\\d+$", "^\\d+\\s*s$"],
+      "countdownViewIds": ["ad_progress_text", "ad_countdown", "ad_timer", "AdsCountdown"],
+      "countdownPatterns": [
+        "Ad\\s*[·•|:\\-]\\s*(\\d{1,2}):(\\d{2})",
+        "Ad\\s+(\\d{1,2}):(\\d{2})",
+        "Skip(?:\\s+ads?)?\\s+in\\s+(\\d+)"
+      ],
+      "standaloneCountdown": "^(\\d{1,2}):(\\d{2})$",
+      "ignoreStandaloneViewIdParts": ["time_bar", "duration", "seekbar", "seek_bar", "player_time", "current_time", "watch_time"]
+    }
+  ]
+}

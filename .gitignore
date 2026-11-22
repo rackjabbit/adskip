@@ -1,0 +1,34 @@
+# Gradle
+.gradle/
+build/
+**/build/
+
+# Local machine
+local.properties
+
+# Android Studio / IntelliJ
+*.iml
+.idea/
+captures/
+.externalNativeBuild/
+.cxx/
+.navigation/
+
+# Build outputs
+*.apk
+*.aab
+*.ap_
+*.dex
+output.json
+
+# Keystores and secrets
+*.jks
+*.keystore
+*.pem
+*.p12
+google-services.json
+keystore.properties
+
+# OS / profiler
+.DS_Store
+*.hprof

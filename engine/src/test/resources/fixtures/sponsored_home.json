@@ -1,0 +1,13 @@
+{
+  "className": "android.widget.RecyclerView",
+  "children": [
+    {
+      "className": "android.widget.TextView",
+      "text": "Sponsored"
+    },
+    {
+      "className": "android.widget.TextView",
+      "text": "A product you might like"
+    }
+  ]
+}

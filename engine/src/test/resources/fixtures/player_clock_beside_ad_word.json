@@ -1,0 +1,19 @@
+{
+  "className": "android.widget.FrameLayout",
+  "children": [
+    {
+      "className": "android.widget.LinearLayout",
+      "children": [
+        {
+          "className": "android.widget.TextView",
+          "text": "Ad"
+        },
+        {
+          "viewId": "com.google.android.youtube:id/time_bar_current_time",
+          "className": "android.widget.TextView",
+          "text": "0:20"
+        }
+      ]
+    }
+  ]
+}

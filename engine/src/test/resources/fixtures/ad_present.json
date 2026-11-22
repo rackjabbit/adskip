@@ -1,0 +1,14 @@
+{
+  "className": "android.widget.FrameLayout",
+  "children": [
+    {
+      "viewId": "com.google.android.youtube:id/ad_progress_text",
+      "className": "android.widget.TextView",
+      "text": "Ad · 0:05"
+    },
+    {
+      "className": "android.widget.TextView",
+      "text": "Ad 1 of 2"
+    }
+  ]
+}

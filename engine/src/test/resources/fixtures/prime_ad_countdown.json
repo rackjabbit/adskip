@@ -1,0 +1,18 @@
+{
+  "className": "android.widget.FrameLayout",
+  "children": [
+    {
+      "className": "android.widget.LinearLayout",
+      "children": [
+        {
+          "className": "android.widget.TextView",
+          "text": "Ad"
+        },
+        {
+          "className": "android.widget.TextView",
+          "text": "0:20"
+        }
+      ]
+    }
+  ]
+}
