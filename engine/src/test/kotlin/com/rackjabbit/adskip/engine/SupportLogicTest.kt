@@ -47,8 +47,16 @@ class SupportLogicTest {
                     viewId = "com.google.android.youtube:id/ad_progress_text",
                     className = "android.widget.TextView",
                     text = "Ad · 0:05\nnext",
+                    visible = true,
+                    bounds = Bounds(40, 80, 360, 140),
                 ),
-                UiNode(className = "android.widget.Button", text = "Skip ad", clickable = true),
+                UiNode(
+                    className = "android.widget.Button",
+                    text = "Skip ad",
+                    clickable = true,
+                    visible = true,
+                    bounds = Bounds(800, 1500, 1040, 1600),
+                ),
             ),
         )
         val detection = AdDetector.detect(root, shippedConfig().apps.first())
@@ -64,6 +72,10 @@ class SupportLogicTest {
         assertTrue(text.contains("truncated: true"))
         assertTrue(text.contains("package: com.google.android.youtube"))
         assertTrue(text.contains("adPlaying: true"))
+        assertTrue(text.contains("matches:"))
+        assertTrue(text.contains("source=viewId"))
+        assertTrue(text.contains("id=com.google.android.youtube:id/ad_progress_text"))
+        assertTrue(text.contains("value=ad_progress_text"))
         val withNotes = NodeTreeFormatter.format(
             root = root,
             packageName = "com.google.android.youtube",

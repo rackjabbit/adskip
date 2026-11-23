@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.widget.Toast
 import com.rackjabbit.adskip.audio.VolumeApplier
 import com.rackjabbit.adskip.data.ConfigFiles
 import com.rackjabbit.adskip.data.SettingsRepository
@@ -23,7 +24,9 @@ import com.rackjabbit.adskip.engine.DumpThrottle
 import com.rackjabbit.adskip.engine.EngineOutput
 import com.rackjabbit.adskip.engine.EngineSettings
 import com.rackjabbit.adskip.engine.NodeTreeFormatter
+import com.rackjabbit.adskip.engine.NotAdCopy
 import com.rackjabbit.adskip.engine.PlannedClick
+import com.rackjabbit.adskip.engine.ScreenLogPolicy
 import com.rackjabbit.adskip.engine.UiNode
 import com.rackjabbit.adskip.engine.VolumeCommand
 import com.rackjabbit.adskip.overlay.OverlayController
@@ -33,13 +36,17 @@ class AdSkipAccessibilityService : AccessibilityService() {
     private val handler = Handler(Looper.getMainLooper())
     private val repository by lazy { SettingsRepository(this) }
     private val volumes by lazy { VolumeApplier(this, repository) }
-    private val overlay by lazy { OverlayController(this) }
+    private val overlay by lazy { OverlayController(this, ::onNotAnAd) }
     private val windowManager by lazy { getSystemService(WindowManager::class.java) }
     private val engine = AdSkipEngine { ConfigFiles.store(this).current() }
     private val dumpThrottle = DumpThrottle()
     private var lastPackage: String? = null
     private var evalQueued = false
     private var muteHeld = false
+    private var reportTree: UiNode? = null
+    private var reportDetection: Detection? = null
+    private var reportPackage: String? = null
+    private var reportingNotAd = false
 
     private val preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
         refreshSoon()
@@ -174,6 +181,11 @@ class AdSkipAccessibilityService : AccessibilityService() {
             )
             VolumeCommand.None -> Unit
         }
+        if (tree != null && packageName != null && output.showOverlay) {
+            reportTree = tree
+            reportPackage = packageName
+            if (output.detection?.hits?.isNotEmpty() == true) reportDetection = output.detection
+        }
         if (output.showOverlay) {
             overlay.show(output.overlayStyle, output.opacity, output.title, output.detail)
         } else {
@@ -190,8 +202,29 @@ class AdSkipAccessibilityService : AccessibilityService() {
             Log.i(TAG, "skip pressed")
         }
         muteHeld = output.muteHeld
-        if (tree != null && packageName != null) maybeDump(tree, packageName, output.detection)
+        if (tree != null && packageName != null) maybeDump(tree, packageName, output.detection, force = false)
         schedulePoll(output.showOverlay || output.muteHeld)
+    }
+
+    private fun onNotAnAd() {
+        if (reportingNotAd) return
+        reportingNotAd = true
+        try {
+            val pkg = reportPackage ?: lastPackage
+            val tree = reportTree
+            val detection = reportDetection
+            val output = engine.markNotAnAd(
+                settingsFor(pkg),
+                volumes.current(),
+                volumes.isMusicMuted(),
+            )
+            if (tree != null && pkg != null) maybeDump(tree, pkg, detection, force = true)
+            repository.recordNotAd()
+            apply(output, null, null, pkg)
+            Toast.makeText(this, NotAdCopy.TOAST, Toast.LENGTH_SHORT).show()
+        } finally {
+            reportingNotAd = false
+        }
     }
 
     private fun performClick(root: AccessibilityNodeInfo, click: PlannedClick): Boolean {
@@ -256,16 +289,20 @@ class AdSkipAccessibilityService : AccessibilityService() {
         }
     }
 
-    private fun maybeDump(tree: UiNode, packageName: String, detection: Detection?) {
-        if (!repository.debugDump) return
-        if (!dumpThrottle.shouldDump(System.currentTimeMillis(), force = false)) return
+    private fun maybeDump(tree: UiNode, packageName: String, detection: Detection?, force: Boolean) {
+        if (!ScreenLogPolicy.shouldWrite(repository.debugDump, force)) return
+        if (!dumpThrottle.shouldDump(System.currentTimeMillis(), force = force)) return
         try {
+            val notes = buildList {
+                addAll(volumes.notes())
+                if (force) add(NotAdCopy.REPORT_NOTE)
+            }
             val text = NodeTreeFormatter.format(
                 root = tree,
                 packageName = packageName,
                 capturedAt = Instant.now().toString(),
                 detection = detection,
-                notes = volumes.notes(),
+                notes = notes,
             )
             val file = DumpWriter(DebugFiles.dir(this)).write(text)
             if (repository.lastDumpPath != file.absolutePath) repository.lastDumpPath = file.absolutePath

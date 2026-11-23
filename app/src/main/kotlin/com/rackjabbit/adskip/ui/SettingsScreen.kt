@@ -59,6 +59,7 @@ import com.rackjabbit.adskip.data.ConfigFiles
 import com.rackjabbit.adskip.data.SettingsRepository
 import com.rackjabbit.adskip.debug.DebugFiles
 import com.rackjabbit.adskip.engine.ConfigParseResult
+import com.rackjabbit.adskip.engine.NotAdCopy
 import com.rackjabbit.adskip.engine.OverlayStyle
 import com.rackjabbit.adskip.service.AdSkipAccessibilityService
 import java.io.File
@@ -109,6 +110,7 @@ private fun HomeScreen(repository: SettingsRepository, onEdit: () -> Unit) {
     val opacity = remember(prefsTick) { repository.opacity }
     val adsSeen = remember(prefsTick) { repository.adsSeen }
     val skips = remember(prefsTick) { repository.skips }
+    val markedNotAd = remember(prefsTick) { repository.markedNotAd }
     val latestLog = remember(prefsTick) { DebugFiles.latest(context) }
 
     val importer = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -203,6 +205,12 @@ private fun HomeScreen(repository: SettingsRepository, onEdit: () -> Unit) {
                         onValueChange = { repository.opacity = it },
                     )
                     OverlayPreview(style, opacity)
+                    Text(
+                        "${NotAdCopy.BUTTON} hides the cover, puts the volume back, and saves a screen log you can share.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 4.dp, bottom = 8.dp),
+                    )
                     ToggleRow(
                         title = "Mute media volume",
                         subtitle = "Mutes media audio for the ad, including back-to-back ads, then puts it back. Alarms and calls stay as they are.",
@@ -214,6 +222,7 @@ private fun HomeScreen(repository: SettingsRepository, onEdit: () -> Unit) {
                 Section(title = "What it has done") {
                     StatRow("Ads noticed", adsSeen)
                     StatRow("Skips pressed", skips)
+                    StatRow(NotAdCopy.STAT, markedNotAd)
                     TextButton(onClick = { repository.resetStats() }) { Text("Reset counts") }
                 }
 
@@ -511,6 +520,17 @@ private fun OverlayPreview(style: OverlayStyle, opacity: Float) {
         ) {
             Text("Ad playing", color = Color(0xFFF4F1EA), fontWeight = FontWeight.Bold)
             Text("Ad 1 of 2 · 0:05", color = Color(0xFFE2B657), fontSize = 14.sp)
+            Text(
+                NotAdCopy.BUTTON,
+                color = Color(0xFF1A1408),
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color(0xFFE2B657))
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+            )
         }
     }
 }

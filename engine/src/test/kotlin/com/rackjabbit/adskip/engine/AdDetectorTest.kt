@@ -140,7 +140,13 @@ class AdDetectorTest {
     fun disabledSkipButton_isNotReady() {
         val root = UiNode(
             children = listOf(
-                UiNode(text = "Skip ad", clickable = true, enabled = false, visible = true),
+                UiNode(
+                    text = "Skip ad",
+                    clickable = true,
+                    enabled = false,
+                    visible = true,
+                    bounds = Bounds(40, 80, 240, 140),
+                ),
             ),
         )
         val detection = AdDetector.detect(root, youtube)
@@ -164,11 +170,150 @@ class AdDetectorTest {
     fun viewIdSuffix_matchesFullResourceName() {
         val root = UiNode(
             children = listOf(
-                UiNode(viewId = "com.google.android.youtube:id/ad_badge"),
+                UiNode(
+                    viewId = "com.google.android.youtube:id/ad_progress_text",
+                    text = "Ad · 0:08",
+                    visible = true,
+                    bounds = Bounds(40, 80, 360, 140),
+                ),
             ),
         )
         val detection = AdDetector.detect(root, youtube)
         assertTrue(detection.adPlaying)
         assertNull(detection.skip)
+        assertTrue(detection.hits.any { it.viewId?.endsWith("ad_progress_text") == true })
+    }
+
+    @Test
+    fun invisibleAdNode_doesNotMatch() {
+        val hidden = UiNode(
+            children = listOf(
+                UiNode(
+                    viewId = "com.google.android.youtube:id/ad_progress_text",
+                    text = "Ad · 0:05",
+                    visible = false,
+                    bounds = Bounds(40, 80, 360, 140),
+                ),
+                UiNode(
+                    viewId = "com.google.android.youtube:id/ad_overlay",
+                    visible = true,
+                    bounds = Bounds.EMPTY,
+                ),
+            ),
+        )
+        val detection = AdDetector.detect(hidden, youtube)
+        assertFalse(detection.adPlaying)
+        assertTrue(detection.hits.isEmpty())
+    }
+
+    @Test
+    fun visibleEmptyAdOverlay_doesNotMatch() {
+        val root = UiNode(
+            viewId = "com.google.android.youtube:id/ad_overlay",
+            visible = true,
+            bounds = Bounds(0, 0, 1080, 600),
+            children = listOf(
+                UiNode(
+                    viewId = "com.google.android.youtube:id/title",
+                    text = "How to make a shelf",
+                    visible = true,
+                    bounds = Bounds(40, 500, 900, 580),
+                ),
+            ),
+        )
+        assertFalse(AdDetector.detect(root, youtube).adPlaying)
+    }
+
+    @Test
+    fun feedAdBadgeBesideDuration_isNotAVideoAd() {
+        val root = UiNode(
+            children = listOf(
+                UiNode(
+                    viewId = "com.google.android.youtube:id/ad_badge",
+                    text = "Ad",
+                    visible = true,
+                    bounds = Bounds(20, 40, 90, 72),
+                ),
+                UiNode(
+                    text = "0:30",
+                    visible = true,
+                    bounds = Bounds(20, 200, 110, 240),
+                ),
+            ),
+        )
+        assertFalse(AdDetector.detect(root, youtube).adPlaying)
+    }
+
+    @Test
+    fun sponsoredBesideDuration_isNotAVideoAd() {
+        val root = UiNode(
+            children = listOf(
+                UiNode(text = "Sponsored", visible = true, bounds = Bounds(20, 40, 220, 80)),
+                UiNode(text = "0:12", visible = true, bounds = Bounds(20, 90, 120, 130)),
+            ),
+        )
+        assertFalse(AdDetector.detect(root, youtube).adPlaying)
+    }
+
+    @Test
+    fun oldStrongBadgeRule_doesNotTreatAThumbnailAsAnAd() {
+        val withBadge = youtube.copy(
+            adSignals = youtube.adSignals + SignalRule(
+                source = SignalSource.VIEW_ID,
+                match = MatchMode.SUFFIX,
+                values = listOf("ad_badge"),
+                strength = SignalStrength.STRONG,
+            ),
+        )
+        val root = UiNode(
+            children = listOf(
+                UiNode(
+                    viewId = "com.google.android.youtube:id/ad_badge",
+                    text = "Ad",
+                    visible = true,
+                    bounds = Bounds(20, 40, 90, 72),
+                ),
+                UiNode(text = "0:30", visible = true, bounds = Bounds(20, 200, 110, 240)),
+            ),
+        )
+        assertFalse(AdDetector.detect(root, withBadge).adPlaying)
+    }
+
+    @Test
+    fun genericSkipButtonId_withoutSkipText_isNotAnAd() {
+        val withSkipId = youtube.copy(
+            skipSignals = youtube.skipSignals + SignalRule(
+                source = SignalSource.VIEW_ID,
+                match = MatchMode.SUFFIX,
+                values = listOf("skip_button"),
+                strength = SignalStrength.STRONG,
+            ),
+        )
+        val root = UiNode(
+            children = listOf(
+                UiNode(
+                    viewId = "com.google.android.youtube:id/skip_button",
+                    visible = true,
+                    bounds = Bounds(800, 1400, 980, 1500),
+                ),
+            ),
+        )
+        assertFalse(AdDetector.detect(root, withSkipId).adPlaying)
+    }
+
+    @Test
+    fun titleThatSaysAd_besideAClock_isNotAVideoAd() {
+        val root = UiNode(
+            children = listOf(
+                UiNode(
+                    viewId = "com.google.android.youtube:id/title",
+                    text = "Ad",
+                    visible = true,
+                    bounds = Bounds(40, 400, 800, 470),
+                ),
+                UiNode(text = "0:20", visible = true, bounds = Bounds(40, 480, 160, 520)),
+            ),
+        )
+        assertFalse(AdDetector.detect(root, youtube).adPlaying)
     }
 }

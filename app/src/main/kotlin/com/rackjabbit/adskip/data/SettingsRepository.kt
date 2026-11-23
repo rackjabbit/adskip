@@ -43,6 +43,7 @@ class SettingsRepository(context: Context) {
 
     val adsSeen: Int get() = prefs.getInt(KEY_ADS, 0)
     val skips: Int get() = prefs.getInt(KEY_SKIPS, 0)
+    val markedNotAd: Int get() = prefs.getInt(KEY_NOT_AD, 0)
 
     var lastDumpPath: String?
         get() = prefs.getString(KEY_DUMP_PATH, null)
@@ -62,8 +63,12 @@ class SettingsRepository(context: Context) {
         prefs.edit().putInt(KEY_SKIPS, skips + 1).apply()
     }
 
+    fun recordNotAd() {
+        prefs.edit().putInt(KEY_NOT_AD, markedNotAd + 1).apply()
+    }
+
     fun resetStats() {
-        prefs.edit().putInt(KEY_ADS, 0).putInt(KEY_SKIPS, 0).apply()
+        prefs.edit().putInt(KEY_ADS, 0).putInt(KEY_SKIPS, 0).putInt(KEY_NOT_AD, 0).apply()
     }
 
     fun register(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
@@ -89,6 +94,7 @@ class SettingsRepository(context: Context) {
         private const val KEY_MUTE_ZEROED = "mute_index_zeroed"
         private const val KEY_ADS = "ads_seen"
         private const val KEY_SKIPS = "skips"
+        private const val KEY_NOT_AD = "marked_not_ad"
         private const val KEY_DUMP_PATH = "last_dump"
         private const val STYLE_BANNER = "banner"
         private const val STYLE_COVER = "cover"

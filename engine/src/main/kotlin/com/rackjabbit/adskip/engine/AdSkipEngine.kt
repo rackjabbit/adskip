@@ -49,6 +49,8 @@ data class EngineOutput(
     val adStarted: Boolean,
     val adEnded: Boolean,
     val detection: Detection?,
+    val showNotAdButton: Boolean,
+    val dismissedNotAd: Boolean,
 )
 
 class AdSession {
@@ -98,8 +100,12 @@ class AdSkipEngine(
     private val session = AdSession()
     private val debouncer = ClickDebouncer()
     private val mute = MuteMachine()
+    private val suppression = NotAdSuppression()
     private var displayed = OverlayCopy.idle()
     private var nullStreak = 0
+    private var latchedSignature = ""
+    private var latchedScreenKey = ""
+    private var latchedPackage = ""
 
     val isOverlayShowing: Boolean get() = session.active
 
@@ -113,6 +119,7 @@ class AdSkipEngine(
     ): EngineOutput {
         val config = configProvider()
         session.updateThreshold(config.clearMisses)
+        suppression.updateGap(config.clearMisses)
         val app = packageName?.let { pkg -> config.apps.find { it.packageName == pkg } }
         if (!settings.masterEnabled || !settings.packageEnabled || app == null) {
             mute.observe(currentVolume, streamMuted)
@@ -137,7 +144,13 @@ class AdSkipEngine(
             )
         }
         nullStreak = 0
-        val detection = AdDetector.detect(root, app)
+        val raw = AdDetector.detect(root, app)
+        val screenKey = videoScreenKey(root)
+        latchedPackage = packageName
+        if (screenKey.isNotEmpty()) latchedScreenKey = screenKey
+        if (raw.adPlaying) latchedSignature = raw.matchSignature()
+        val allowed = suppression.allow(raw.adPlaying, raw.matchSignature(), screenKey, packageName.orEmpty())
+        val detection = if (allowed) raw else raw.copy(adPlaying = false, countdownSeconds = null, skip = null)
         if (detection.adPlaying) {
             displayed = OverlayCopy.build(detection.countdownSeconds, detection.label)
         }
@@ -172,6 +185,34 @@ class AdSkipEngine(
             nowMs = nowMs,
             currentVolume = currentVolume,
             streamMuted = streamMuted,
+        )
+    }
+
+    /**
+     * Hans tapped "This isn't an ad". Hide immediately, give the volume back,
+     * and don't plan another skip until this video or this match actually changes.
+     */
+    fun markNotAnAd(
+        settings: EngineSettings,
+        currentVolume: Int,
+        streamMuted: Boolean = false,
+    ): EngineOutput {
+        mute.observe(currentVolume, streamMuted)
+        suppression.suppress(latchedSignature, latchedScreenKey, latchedPackage)
+        nullStreak = 0
+        debouncer.reset()
+        val tick = session.endNow()
+        displayed = OverlayCopy.idle()
+        return output(
+            showOverlay = false,
+            settings = settings,
+            detail = null,
+            click = null,
+            volume = mute.forceRelease(),
+            adStarted = false,
+            adEnded = tick.ended,
+            detection = null,
+            dismissedNotAd = true,
         )
     }
 
@@ -238,6 +279,7 @@ class AdSkipEngine(
         adStarted: Boolean,
         adEnded: Boolean,
         detection: Detection?,
+        dismissedNotAd: Boolean = false,
     ): EngineOutput = EngineOutput(
         showOverlay = showOverlay,
         overlayStyle = settings.overlayStyle,
@@ -250,5 +292,7 @@ class AdSkipEngine(
         adStarted = adStarted,
         adEnded = adEnded,
         detection = detection,
+        showNotAdButton = showOverlay,
+        dismissedNotAd = dismissedNotAd,
     )
 }

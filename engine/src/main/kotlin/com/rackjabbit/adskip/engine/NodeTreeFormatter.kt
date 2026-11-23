@@ -31,6 +31,20 @@ object NodeTreeFormatter {
                         "clickPath=${skip.clickablePath?.joinToString("/") ?: "none"}",
                 )
             }
+            if (detection.hits.isEmpty()) {
+                builder.appendLine("matches: none")
+            } else {
+                builder.appendLine("matches:")
+                detection.hits.forEach { hit ->
+                    builder.appendLine(
+                        "- ${hit.role} strength=${hit.strength} source=${hit.source} match=${hit.match} " +
+                            "value=${sanitize(hit.value)} path=${hit.path.joinToString("/")} " +
+                            "id=${hit.viewId.orEmpty()} text=${sanitize(hit.text.orEmpty())} " +
+                            "desc=${sanitize(hit.contentDescription.orEmpty())} visible=${hit.visible} " +
+                            "bounds=[${hit.bounds.left},${hit.bounds.top},${hit.bounds.right},${hit.bounds.bottom}]",
+                    )
+                }
+            }
         }
         notes.forEach { line -> builder.appendLine(line) }
         builder.appendLine()

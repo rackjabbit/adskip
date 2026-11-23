@@ -4,7 +4,13 @@
     {
       "viewId": "com.google.android.youtube:id/ad_progress_text",
       "className": "android.widget.TextView",
-      "text": "Ad · 0:12"
+      "text": "Ad \u00b7 0:12",
+      "bounds": {
+        "left": 36,
+        "top": 40,
+        "right": 560,
+        "bottom": 92
+      }
     },
     {
       "viewId": "com.google.android.youtube:id/skip_ad_button",
@@ -13,7 +19,18 @@
       "clickable": false,
       "enabled": true,
       "visible": true,
-      "bounds": { "left": 800, "top": 1500, "right": 1000, "bottom": 1600 }
+      "bounds": {
+        "left": 800,
+        "top": 1500,
+        "right": 1000,
+        "bottom": 1600
+      }
     }
-  ]
+  ],
+  "bounds": {
+    "left": 36,
+    "top": 40,
+    "right": 560,
+    "bottom": 92
+  }
 }

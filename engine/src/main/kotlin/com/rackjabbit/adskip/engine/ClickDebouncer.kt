@@ -11,4 +11,9 @@ class ClickDebouncer {
         lastSignature = signature
         return true
     }
+
+    fun reset() {
+        lastAtMs = Long.MIN_VALUE / 4
+        lastSignature = null
+    }
 }

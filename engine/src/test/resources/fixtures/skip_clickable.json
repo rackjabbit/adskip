@@ -4,7 +4,13 @@
     {
       "viewId": "com.google.android.youtube:id/ad_progress_text",
       "className": "android.widget.TextView",
-      "text": "Ad 1 of 2"
+      "text": "Ad 1 of 2",
+      "bounds": {
+        "left": 36,
+        "top": 40,
+        "right": 560,
+        "bottom": 92
+      }
     },
     {
       "viewId": "com.google.android.youtube:id/skip_ad_button",
@@ -14,7 +20,18 @@
       "clickable": true,
       "enabled": true,
       "visible": true,
-      "bounds": { "left": 800, "top": 1500, "right": 1040, "bottom": 1600 }
+      "bounds": {
+        "left": 800,
+        "top": 1500,
+        "right": 1040,
+        "bottom": 1600
+      }
     }
-  ]
+  ],
+  "bounds": {
+    "left": 36,
+    "top": 40,
+    "right": 560,
+    "bottom": 92
+  }
 }

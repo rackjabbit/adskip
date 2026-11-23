@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "notes": "Match rules for video ads. strength weak (exact Ad, Sponsored, or Advertisement) counts only when a short mm:ss countdown sits next to that badge. Skip, Skip ad, and Skip ads do not match Skip intro. View ids are matched by the resource entry name, so skip_ad_button matches com.google.android.youtube:id/skip_ad_button.",
+  "notes": "Match rules for video ads. Only nodes the person can see (visible, with area) count. ad_badge and ad_badge_icon are thumbnail badges and are not treated as a playing ad. Exact Ad counts only beside a short countdown that is not the player clock or a thumbnail duration. Sponsored and Advertisement do not. Skip, Skip ad, and Skip ads do not match Skip intro. View ids are matched by the resource entry name, so skip_ad_button matches com.google.android.youtube:id/skip_ad_button.",
   "debounceMs": 1200,
   "clearMisses": 3,
   "hideTimeoutMs": 800,
@@ -12,7 +12,7 @@
         {
           "source": "viewId",
           "match": "suffix",
-          "values": ["ad_progress_text", "ad_countdown", "ad_badge", "ad_badge_icon", "ad_overlay", "ad_timer"],
+          "values": ["ad_progress_text", "ad_countdown", "ad_overlay", "ad_timer"],
           "strength": "strong"
         },
         {
@@ -53,7 +53,7 @@
         {
           "source": "viewId",
           "match": "suffix",
-          "values": ["skip_ad_button", "skip_ads_button", "skip_button"],
+          "values": ["skip_ad_button", "skip_ads_button"],
           "strength": "strong"
         },
         {
@@ -77,7 +77,7 @@
         "Skip(?:\\s+ads?)?\\s+in\\s+(\\d+)"
       ],
       "standaloneCountdown": "^(\\d{1,2}):(\\d{2})$",
-      "ignoreStandaloneViewIdParts": ["time_bar", "duration", "seekbar", "seek_bar", "player_time", "current_time", "watch_time"]
+      "ignoreStandaloneViewIdParts": ["time_bar", "duration", "seekbar", "seek_bar", "player_time", "current_time", "watch_time", "thumbnail", "metadata", "timestamp", "length", "chapter"]
     },
     {
       "packageName": "com.amazon.avod.thirdpartyclient",
@@ -86,7 +86,7 @@
         {
           "source": "viewId",
           "match": "suffix",
-          "values": ["ad_progress_text", "ad_countdown", "ad_badge", "ad_badge_icon", "ad_overlay", "ad_timer", "AdsCountdown"],
+          "values": ["ad_progress_text", "ad_countdown", "ad_overlay", "ad_timer", "AdsCountdown"],
           "strength": "strong"
         },
         {
@@ -127,7 +127,7 @@
         {
           "source": "viewId",
           "match": "suffix",
-          "values": ["skip_ad_button", "skip_ads_button", "skip_button"],
+          "values": ["skip_ad_button", "skip_ads_button"],
           "strength": "strong"
         },
         {
@@ -151,7 +151,7 @@
         "Skip(?:\\s+ads?)?\\s+in\\s+(\\d+)"
       ],
       "standaloneCountdown": "^(\\d{1,2}):(\\d{2})$",
-      "ignoreStandaloneViewIdParts": ["time_bar", "duration", "seekbar", "seek_bar", "player_time", "current_time", "watch_time"]
+      "ignoreStandaloneViewIdParts": ["time_bar", "duration", "seekbar", "seek_bar", "player_time", "current_time", "watch_time", "thumbnail", "metadata", "timestamp", "length", "chapter"]
     },
     {
       "packageName": "com.amazon.amazonvideo.livingroom",
@@ -160,7 +160,7 @@
         {
           "source": "viewId",
           "match": "suffix",
-          "values": ["ad_progress_text", "ad_countdown", "ad_badge", "ad_badge_icon", "ad_overlay", "ad_timer", "AdsCountdown"],
+          "values": ["ad_progress_text", "ad_countdown", "ad_overlay", "ad_timer", "AdsCountdown"],
           "strength": "strong"
         },
         {
@@ -201,7 +201,7 @@
         {
           "source": "viewId",
           "match": "suffix",
-          "values": ["skip_ad_button", "skip_ads_button", "skip_button"],
+          "values": ["skip_ad_button", "skip_ads_button"],
           "strength": "strong"
         },
         {
@@ -225,7 +225,7 @@
         "Skip(?:\\s+ads?)?\\s+in\\s+(\\d+)"
       ],
       "standaloneCountdown": "^(\\d{1,2}):(\\d{2})$",
-      "ignoreStandaloneViewIdParts": ["time_bar", "duration", "seekbar", "seek_bar", "player_time", "current_time", "watch_time"]
+      "ignoreStandaloneViewIdParts": ["time_bar", "duration", "seekbar", "seek_bar", "player_time", "current_time", "watch_time", "thumbnail", "metadata", "timestamp", "length", "chapter"]
     }
   ]
 }

@@ -4,9 +4,33 @@
     {
       "className": "android.widget.LinearLayout",
       "children": [
-        { "className": "android.widget.TextView", "text": "Ad" },
-        { "className": "android.widget.TextView", "text": "0:05" }
-      ]
+        {
+          "className": "android.widget.TextView",
+          "text": "Ad",
+          "bounds": {
+            "left": 36,
+            "top": 40,
+            "right": 560,
+            "bottom": 92
+          }
+        },
+        {
+          "className": "android.widget.TextView",
+          "text": "0:05",
+          "bounds": {
+            "left": 36,
+            "top": 112,
+            "right": 560,
+            "bottom": 164
+          }
+        }
+      ],
+      "bounds": {
+        "left": 36,
+        "top": 40,
+        "right": 560,
+        "bottom": 92
+      }
     },
     {
       "className": "android.widget.Button",
@@ -14,7 +38,18 @@
       "contentDescription": "Skip",
       "clickable": true,
       "enabled": true,
-      "bounds": { "left": 860, "top": 1700, "right": 1040, "bottom": 1800 }
+      "bounds": {
+        "left": 860,
+        "top": 1700,
+        "right": 1040,
+        "bottom": 1800
+      }
     }
-  ]
+  ],
+  "bounds": {
+    "left": 36,
+    "top": 40,
+    "right": 560,
+    "bottom": 92
+  }
 }

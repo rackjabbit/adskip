@@ -22,6 +22,9 @@ data class UiNode(
     )
 
     fun flatten(): List<UiNode> = listOf(this) + children.flatMap { it.flatten() }
+
+    /** On screen for the person holding the phone: the platform says it is visible and it has area. */
+    fun shownToUser(): Boolean = visible && !bounds.isEmpty
 }
 
 fun pathDistance(a: List<Int>, b: List<Int>): Int {

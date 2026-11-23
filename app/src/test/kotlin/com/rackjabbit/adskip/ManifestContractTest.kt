@@ -34,6 +34,23 @@ class ManifestContractTest {
         assertFalse(source.contains("TYPE_APPLICATION_OVERLAY"))
     }
 
+    @Test
+    fun notAnAdButton_receivesTaps() {
+        val source = readProjectFile("app/src/main/kotlin/com/rackjabbit/adskip/overlay/OverlayController.kt")
+        assertTrue(source.contains("NotAdCopy.BUTTON"))
+        assertTrue(source.contains("setOnClickListener { onNotAnAd() }"))
+        assertTrue(source.contains("isClickable = true"))
+        assertTrue(source.contains("overlayLayoutFlags(layer.touchable)"))
+        assertTrue(source.contains("if (!touchable) base or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE else base"))
+    }
+
+    @Test
+    fun versionIsOnePointTwo() {
+        val gradle = readProjectFile("app/build.gradle.kts")
+        assertTrue(gradle.contains("versionName = \"1.2.0\""))
+        assertTrue(gradle.contains("versionCode = 3"))
+    }
+
     private fun readProjectFile(relative: String): String {
         var dir = File(System.getProperty("user.dir") ?: error("user.dir is not set")).absoluteFile
         repeat(6) {
